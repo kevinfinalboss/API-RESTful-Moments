@@ -1,9 +1,14 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
+import Moment from 'App/Models/Moment'
 export default class MomentsController {
-  public async store() {
+  public async store({ request, response }: HttpContextContract) {
+    const body = request.body()
+    const moment = await Moment.create(body)
+
+    response.status(201)
     return {
-      msg: 'A operação foi concluída',
+      message: 'Momento criado com sucesso!',
+      data: moment,
     }
   }
 }
