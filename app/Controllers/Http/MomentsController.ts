@@ -40,4 +40,13 @@ export default class MomentsController {
       data: moment,
     }
   }
+  public async destroy({ params }: HttpContextContract) {
+    const moment = await Moment.findOrFail(params.id)
+    await moment.delete()
+
+    return {
+      data: moment,
+      message: 'Exclusão de momento efetuado com sucesso!',
+    }
+  }
 }
