@@ -49,4 +49,31 @@ export default class MomentsController {
       message: 'Exclusão de momento efetuado com sucesso!',
     }
   }
+
+  public async update({ params, request }: HttpContextContract) {
+    const body = request.body()
+    const moment = await Moment.findOrFail(params.id)
+    moment.title = body.title
+    // eslint-disable-next-line no-self-assign
+    moment.description = body.description
+
+    // eslint-disable-next-line eqeqeq
+    if (moment.image != body.image || !moment.image) {
+      const image = request.file('image', this.validationOptions)
+      if (image) {
+        const imageName = `${uuidv4()}.${image.extname}`
+
+        await image.move(Application.tmpPath('uploads'), {
+          name: imageName,
+        })
+        moment.image = imageName
+      }
+    }
+    await moment.save()
+
+    return {
+      message: 'Momento atualizado com sucesso',
+      data: moment,
+    }
+  }
 }
